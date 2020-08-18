@@ -111,8 +111,7 @@ Build Docker image:
 
 Build Docker image with specific version
 
-	$ # debian may remove old package versions. If you fail to build the image, please try newer version.
-	$ docker build --pull --build-arg BASE_IMAGE_VERSION=10.14 -t datasketch-postgres:10.14 .
+	$ docker build --pull --build-arg BASE_IMAGE_VERSION=10 -t datasketch-postgres:10 .
 
 Run container:
   

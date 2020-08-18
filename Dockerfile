@@ -41,15 +41,15 @@ ADD . /datasketches-postgresql
 WORKDIR /datasketches-postgresql
 
 RUN echo "===> Adding prerequisites..."                      && \
-    export PG_MAJOR=`apt list 2>&1 | sed -n "s/^postgresql-\([0-9.]*\)\/.*/\1/p"`             && \
-    export PG_MINOR=`apt list 2>&1 | sed -n "s/^postgresql-$PG_MAJOR\/\S*\s\(\S*\)\s.*/\1/p"` && \
+    export PG_MAJOR=`apt list --installed 2>&1 | sed -n "s/^postgresql-\([0-9.]*\)\/.*/\1/p"`             && \
+    export PG_MINOR=`apt list --installed 2>&1 | sed -n "s/^postgresql-$PG_MAJOR\/\S*\s\(\S*\)\s.*/\1/p"` && \
     apt-get update -y                                        && \
     DEBIAN_FRONTEND=noninteractive                              \
         apt-get install --no-install-recommends --allow-downgrades -y -q \
                 ca-certificates                                 \
                 build-essential wget unzip                      \
                 postgresql-server-dev-$PG_MAJOR=$PG_MINOR       \
-                libpq-dev=$PG_MINOR libpq5=$PG_MINOR         && \
+                libpq-dev=$PG_MINOR                          && \
     \
     \                
     echo "===> Building datasketches..."                     && \
@@ -78,10 +78,11 @@ RUN echo "===> Adding prerequisites..."                      && \
     \
     \
     echo "===> Clean up..."                                  && \
+    apt-mark hold postgresql-$PG_MAJOR postgresql-client-$PG_MAJOR && \
     apt-get -y remove --purge --auto-remove                     \
             ca-certificates                                     \
             build-essential wget unzip                          \ 
-            postgresql-server-dev-$PG_MAJOR libpq-dev libpq5 && \
+            postgresql-server-dev-$PG_MAJOR libpq-dev        && \
     apt-get clean                                            && \
     rm -rf /datasketches-postgresql /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
